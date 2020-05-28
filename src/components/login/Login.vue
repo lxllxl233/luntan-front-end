@@ -1,121 +1,126 @@
 <template>
+  <div>
   <el-container >
-    <el-header>
-      <el-menu
-        :default-active="activeIndex2"
-        class="el-menu-demo"
-        mode="horizontal"
-        @select="handleSelect"
-        background-color="#545c64"
-        text-color="#fff"
-        active-text-color="#ffd04b">
-        <el-menu-item index="1">首页</el-menu-item>
-        <el-submenu index="2">
-          <template slot="title">博客</template>
-          <el-menu-item index="2-1">热门</el-menu-item>
-          <el-menu-item index="2-2">分类</el-menu-item>
-        </el-submenu>
-        <el-submenu index="3">
-          <template slot="title">论坛</template>
-          <el-menu-item index="3-1">热门</el-menu-item>
-          <el-menu-item index="3-2">分类</el-menu-item>
-        </el-submenu>
-        <el-submenu index="4">
-        <template slot="title">网站工具</template>
-        <el-menu-item index="4-1">自动化爬虫(施工中...)</el-menu-item>
-        <el-menu-item index="4-2">json在线格式化</el-menu-item>
-        <el-menu-item index="4-3">常见算法演示</el-menu-item>
-      </el-submenu>
-        <el-menu-item index="5"><el-button @click="drawer = true" type="primary" style="margin-left: 16px;">
-          网站公共聊天室
-        </el-button>
-
-          <el-drawer
-            title="公共聊天站"
-            :visible.sync="drawer"
-            size="50%">
-            <div>
-              <el-button @click="innerDrawer = true">登录/注册</el-button>
-              <p>
-                <el-container>
-                  <el-header>
-                    <el-alert
-                      title="连接聊天室成功"
-                      type="success">
-                    </el-alert>
-                  </el-header>
-                  <el-main>
-
-                    <!-- 无限滚动条 -->
-                    <template>
-                      <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
-                        <li v-for="i in count" class="infinite-list-item">
-                          <el-container>
-                            <el-aside width="50px">
-                              <span class="demo-basic--circle">
-                                <span class="block"><el-avatar :size="50" :src="circleUrl"></el-avatar></span>
-                              </span>
-                            </el-aside>
-
-                            <el-container>
-                              <el-header height="10px" style="font-size: 8px;">
-                                player
-                              </el-header>
-                              <el-main >
-                                <el-tag type="label"  effect="dark">{{i}}</el-tag>
-                              </el-main>
-                            </el-container>
-                          </el-container>
-                        </li>
-                      </ul>
-                    </template>
-
-                  </el-main>
-                  <el-footer>
-                    <el-input
-                      type="textarea"
-                      autosize
-                      placeholder="请输入内容"
-                      v-model="textarea1">
-                    </el-input>
-                    <div style="margin: 20px 0;"></div>
-                  </el-footer>
-                </el-container>
-              </p>
-              <el-drawer
-                title="我的信息"
-                :append-to-body="true"
-                :before-close="handleClose"
-                :visible.sync="innerDrawer">
-                <p>
-                  _(:зゝ∠)_
-                </p>
-              </el-drawer>
-            </div>
-          </el-drawer></el-menu-item>
-      </el-menu>
-    </el-header>
-
-
     <el-main>
       <el-container>
         <el-container>
-          <el-main>Main</el-main>
+          <el-main>
+            <template>
+              <el-carousel indicator-position="outside" height="500px">
+                <el-carousel-item v-for="item in imgUrls"  :key="item">
+                  <el-image
+                    style="width: 1880px; height: 500px"
+                    :src="item"
+                    fit="cover"></el-image>
+                </el-carousel-item>
+              </el-carousel>
+            </template>
+          </el-main>
         </el-container>
-        <el-aside width="200px">Aside</el-aside>
       </el-container>
     </el-main>
 
-
-    <el-footer>Footer</el-footer>
   </el-container>
+  <el-container>
+    <el-main>
+      <el-collapse v-model="activeName" accordion>
+        <el-collapse-item>
+          <template slot="title">
+            <el-divider content-position="center">
+              <i class="el-icon-s-help"></i>
+              >>> 热门博客 Popular blogs <<<</el-divider>
+          </template>
+          <el-row>
+            <el-col :span="8" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
+              <el-card :body-style="{ padding: '0px' }">
+                <el-image src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"></el-image>
+                <div style="padding: 14px;">
+                  <span>好吃的汉堡</span>
+                  <div class="bottom clearfix">
+                    <time class="time">{{ currentDate }}</time>
+                    <el-button type="text" class="button">操作按钮</el-button>
+                  </div>
+                </div>
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-collapse-item>
+        <el-collapse-item>
+          <template slot="title">
+            <el-divider content-position="center">
+              <i class="el-icon-s-promotion"></i>
+              >>> 热门论坛 Popular forums <<<</el-divider>
+          </template>
+          <el-row>
+            <el-col :span="8" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
+              <el-card :body-style="{ padding: '0px' }">
+                <el-image src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"></el-image>
+                <div style="padding: 14px;">
+                  <span>好吃的汉堡</span>
+                  <div class="bottom clearfix">
+                    <time class="time">{{ currentDate }}</time>
+                    <el-button type="text" class="button">操作按钮</el-button>
+                  </div>
+                </div>
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-collapse-item>
+        <el-collapse-item>
+          <template slot="title">
+            <el-divider content-position="center">
+              <i class="el-icon-magic-stick"></i>
+              >>> 推荐用户 Recommend users <<<</el-divider>
+          </template>
+          <el-row>
+            <el-col :span="8" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
+              <el-card :body-style="{ padding: '0px' }">
+                <el-image src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"></el-image>
+                <div style="padding: 14px;">
+                  <span>好吃的汉堡</span>
+                  <div class="bottom clearfix">
+                    <time class="time">{{ currentDate }}</time>
+                    <el-button type="text" class="button">操作按钮</el-button>
+                  </div>
+                </div>
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-collapse-item>
+        <el-collapse-item>
+          <template slot="title">
+            <el-divider content-position="center">
+              <i class="el-icon-football"></i>
+              >>> 网站工具 Website tools <<<</el-divider>
+          </template>
+          <el-row>
+            <el-col :span="8" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
+              <el-card :body-style="{ padding: '0px' }">
+                <el-image src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"></el-image>
+                <div style="padding: 14px;">
+                  <span>好吃的汉堡</span>
+                  <div class="bottom clearfix">
+                    <time class="time">{{ currentDate }}</time>
+                    <el-button type="text" class="button">操作按钮</el-button>
+                  </div>
+                </div>
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-collapse-item>
+      </el-collapse>
+    </el-main>
+  </el-container>
+  </div>
 </template>
 
 <script>
     export default {
-
+      name: "Login",
       data() {
         return {
+          currentDate: new Date(),
+          activeName: '1',
           count: 0,
           circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
           squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
@@ -124,7 +129,13 @@
           activeIndex: '1',
           activeIndex2: '1',
           drawer: false,
-          innerDrawer: false
+          innerDrawer: false,
+          imgUrls: [
+            "https://pan.qqsuu.cn/view/1059.jpg",
+            "https://pan.qqsuu.cn/view/524.jpg",
+            "https://pan.qqsuu.cn/view/974.jpg",
+            "https://pan.qqsuu.cn/view/837.jpg"
+          ]
         };
       },
       methods: {
@@ -141,7 +152,7 @@
         },
         load () {
           if (this.count > 10){
-
+            this.count+=1
           }else {
             this.count += 2
           }
@@ -153,5 +164,54 @@
 
 
 <style>
+  .el-carousel__item h3 {
+    color: #475669;
+    font-size: 18px;
+    opacity: 0.75;
+    line-height: 300px;
+    margin: 0;
+  }
 
+  .el-carousel__item:nth-child(2n) {
+    background-color: #99a9bf;
+  }
+
+  .el-carousel__item:nth-child(2n+1) {
+    background-color: #d3dce6;
+  }
+  .infinite-list{
+    height:400px;
+  }
+  .infinite-list-item{
+    height:100px;
+  }
+  .time {
+    font-size: 13px;
+    color: #999;
+  }
+
+  .bottom {
+    margin-top: 13px;
+    line-height: 12px;
+  }
+
+  .button {
+    padding: 0;
+    float: right;
+  }
+
+  .image {
+    width: 100%;
+    display: block;
+  }
+
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+
+  .clearfix:after {
+    clear: both
+  }
 </style>

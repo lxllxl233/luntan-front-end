@@ -5,10 +5,16 @@ import App from './App'
 import router from './router'
 import './plugins/element.js'
 import EL from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import InfiniteLoading from 'vue-infinite-loading';
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
 
 Vue.config.productionTip = false
 
 Vue.use(EL)
+Vue.use(InfiniteLoading)
+Vue.use(mavonEditor)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
