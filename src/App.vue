@@ -3,6 +3,7 @@
 <el-container>
   <el-header>
     <el-menu
+      router="true"
       :default-active="activeIndex2"
       class="el-menu-demo"
       mode="horizontal"
@@ -10,24 +11,16 @@
       background-color="#545c64"
       text-color="#fff"
       active-text-color="#ffd04b">
-      <el-menu-item index="1">首页</el-menu-item>
-      <el-submenu index="2">
-        <template slot="title">博客</template>
-        <el-menu-item index="2-1">热门</el-menu-item>
-        <el-menu-item index="2-2">分类</el-menu-item>
-      </el-submenu>
-      <el-submenu index="3">
-        <template slot="title">论坛</template>
-        <el-menu-item index="3-1">热门</el-menu-item>
-        <el-menu-item index="3-2">分类</el-menu-item>
-      </el-submenu>
+      <el-menu-item index="/login">首页</el-menu-item>
+      <el-menu-item index="/blogMain">博客</el-menu-item>
+      <el-menu-item index="/lunTanMain">论坛</el-menu-item>
       <el-submenu index="4">
         <template slot="title">网站工具</template>
         <el-menu-item index="4-1">自动化爬虫(施工中...)</el-menu-item>
         <el-menu-item index="4-2">json在线格式化</el-menu-item>
         <el-menu-item index="4-3">常见算法演示</el-menu-item>
       </el-submenu>
-      <el-menu-item index="5"><el-button @click="drawer = true" type="primary" style="margin-left: 16px;">
+      <el-menu-item index="#"><el-button @click="drawer = true" type="primary" style="margin-left: 16px;">
         网站公共聊天室
       </el-button>
 
@@ -36,7 +29,7 @@
           :visible.sync="drawer"
           size="50%">
           <div>
-            <el-button @click="innerDrawer = true">登录/注册</el-button>
+            <el-button @click="innerDrawer = true">我的信息</el-button>
             <p>
               <el-container>
                 <el-header>
@@ -88,12 +81,116 @@
               :append-to-body="true"
               :before-close="handleClose"
               :visible.sync="innerDrawer">
-              <p>
-                _(:зゝ∠)_
-              </p>
+              <el-container>
+
+                <el-header>
+                  <el-divider content-position="center">
+                    <div class="demo-basic--circle">
+                      <div class="block"><el-avatar :size="50" :src="userInfo.userHeadimg"></el-avatar></div>
+                    </div>
+                  </el-divider>
+                  <div align="center">
+                  <i class="el-icon-edit"></i>
+                  <el-link type="info" @click="editUserInfo=true">编辑个人信息</el-link>
+                    <el-dialog
+                      title="提示"
+                      :visible.sync="editUserInfo"
+                      width="30%"
+                      center>
+                      <span>需要注意的是内容是默认不居中的</span>
+                      <span slot="footer" class="dialog-footer">
+                      <el-button @click="centerDialogVisible = false">取 消</el-button>
+                      <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
+                    </span>
+                    </el-dialog>
+                </div>
+                </el-header>
+                <el-main>
+                  <el-divider content-position="center">
+                    姓名
+                  </el-divider>
+                  <div align="center">{{userInfo.username}}</div>
+                  <el-divider content-position="center">
+                    昵称
+                  </el-divider>
+                  <div align="center">{{userInfo.nickname}}</div>
+                  <el-divider content-position="center">
+                    个人介绍
+                  </el-divider>
+                  <div align="center">{{userInfo.userIntroduction}}</div>
+                  <el-divider content-position="center">
+                    操作
+                  </el-divider>
+                  <el-row>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple" align="center">
+                      <el-button type="success" round @click="toWriteBlog">发布博客</el-button>
+                    </div></el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple-light" align="center">
+                      <el-button type="success" round>发布论坛</el-button>
+                    </div></el-col>
+                  </el-row>
+
+                </el-main>
+              </el-container>
             </el-drawer>
           </div>
         </el-drawer></el-menu-item>
+      <el-menu-item>
+        <el-button type="text" @click="centerDialogVisible = true" v-if="isNotLogin">登录/注册</el-button>
+
+        <el-dialog
+          title="登录/注册"
+          :visible.sync="centerDialogVisible"
+          width="45%"
+          center="false">
+          <span>
+            <el-form ref="form" :model="form" label-width="80px" v-if="isRegistered">
+              <el-form-item>
+                <el-input placeholder="大侠留个姓名吧" v-model="form.username"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-input placeholder="留个昵称" v-model="form.nickname"></el-input>
+              </el-form-item>
+                 <el-form-item>
+                <el-input placeholder="填个电话" v-model="form.userPhone"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-input placeholder="请输入密码" v-model="form.userPassword"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-input placeholder="请再次输入密码" v-model="form.userPassword"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-input placeholder="最后,一句话介绍一下自己吧" v-model="form.userIntroduction"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-divider content-position="center">
+                  <el-button type="primary" @click="onSubmit">立即注册</el-button>
+                  <el-button @click="toLogin">切换到登录</el-button>
+                </el-divider>
+              </el-form-item>
+            </el-form>
+
+            <el-form ref="form" :model="form" label-width="80px" v-if="!isRegistered">
+              <el-form-item>
+                <el-input placeholder="请输入手机号" v-model="form.username"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-input placeholder="请输入密码" v-model="form.nickname"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-divider content-position="center">
+                  <el-button type="primary" @click="onSubmit">立即登录</el-button>
+                  <el-button @click="toLogin">切换到注册</el-button>
+                </el-divider>
+              </el-form-item>
+            </el-form>
+          </span>
+        </el-dialog>
+      </el-menu-item>
+
     </el-menu>
   </el-header>
   <router-view></router-view>
@@ -116,6 +213,25 @@ export default {
   data() {
 
     return {
+      form: {
+        username: "",
+        nickname: "",
+        userPhone: "",
+        userPassword: "",
+        userIntroduction: ""
+      },
+      userInfo: {
+        username: "小龙",
+        nickname: "小龙",
+        userHeadimg: "https://images.pexels.com/photos/4450053/pexels-photo-4450053.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+        userIntroduction: "菜鸡程序员"
+      },
+      //是否登录
+      isNotLogin: true,
+      //注册还是登录
+      isRegistered: true,
+      centerDialogVisible: false,
+      editUserInfo: false,
       count: 0,
       circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
       squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
@@ -139,11 +255,7 @@ export default {
     },
     //内层关闭事件
     handleClose(done) {
-      this.$confirm('还有未保存的工作哦确定关闭吗？')
-        .then(_ => {
-          done();
-        })
-        .catch(_ => {});
+      done()
     },
     load () {
       if (this.count > 10){
@@ -151,7 +263,18 @@ export default {
       }else {
         this.count += 2
       }
-
+    },
+    onSubmit() {
+      console.log('submit!');
+    },
+    toLogin(){
+      this.isRegistered = !this.isRegistered
+    },
+    toWriteBlog(){
+      this.$router.replace("/writeBlog")
+    },
+    toWriteLunTan(){
+      this.isRegistered = !this.isRegistered
     }
   }
 }

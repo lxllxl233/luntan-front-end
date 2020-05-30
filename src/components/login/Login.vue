@@ -31,7 +31,7 @@
               >>> 热门博客 Popular blogs <<<</el-divider>
           </template>
           <el-row>
-            <el-col :span="8" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
+            <el-col :span="4" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
               <el-card :body-style="{ padding: '0px' }">
                 <el-image src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"></el-image>
                 <div style="padding: 14px;">
@@ -52,7 +52,7 @@
               >>> 热门论坛 Popular forums <<<</el-divider>
           </template>
           <el-row>
-            <el-col :span="8" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
+            <el-col :span="4" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
               <el-card :body-style="{ padding: '0px' }">
                 <el-image src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"></el-image>
                 <div style="padding: 14px;">
@@ -73,7 +73,7 @@
               >>> 推荐用户 Recommend users <<<</el-divider>
           </template>
           <el-row>
-            <el-col :span="8" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
+            <el-col :span="4" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
               <el-card :body-style="{ padding: '0px' }">
                 <el-image src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"></el-image>
                 <div style="padding: 14px;">
@@ -94,7 +94,7 @@
               >>> 网站工具 Website tools <<<</el-divider>
           </template>
           <el-row>
-            <el-col :span="8" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
+            <el-col :span="4" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
               <el-card :body-style="{ padding: '0px' }">
                 <el-image src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"></el-image>
                 <div style="padding: 14px;">

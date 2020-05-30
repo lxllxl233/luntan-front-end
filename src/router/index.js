@@ -4,6 +4,9 @@ import Backstage from "../components/admin/Backstage";
 import Login from "../components/login/Login";
 import BlogPage from "../components/blog/BlogPage";
 import WriteBlog from "../components/blog/WriteBlog";
+import BlogMain from "../components/blog/BlogMain";
+import LunTanMain from "../components/luntan/LunTanMain";
+import Err from "../components/Err";
 
 Vue.use(Router)
 
@@ -20,9 +23,9 @@ export default new Router({
       component: Login
     },
     {
-      path: '/blogPage',
-      name: 'BlogPage',
-      component: BlogPage
+      path: '/',
+      name: 'Login',
+      component: Login
     },
     {
       path: '/blogPage',
@@ -33,6 +36,21 @@ export default new Router({
       path: '/writeBlog',
       name: "WriteBlog",
       component: WriteBlog
+    },
+    {
+      path: '/blogMain',
+      name: "blogMain",
+      component: BlogMain
+    },
+    {
+      path: '/lunTanMain',
+      name: "lunTanMain",
+      component: LunTanMain
+    },
+    {
+      path: "*",
+      name: "err",
+      component: Err
     }
   ]
 })
