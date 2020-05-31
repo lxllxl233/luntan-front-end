@@ -7,6 +7,8 @@ import WriteBlog from "../components/blog/WriteBlog";
 import BlogMain from "../components/blog/BlogMain";
 import LunTanMain from "../components/luntan/LunTanMain";
 import Err from "../components/Err";
+import LunTanEdit from "../components/luntan/LunTanEdit";
+import LunTanPage from "../components/luntan/LunTanPage";
 
 Vue.use(Router)
 
@@ -46,6 +48,16 @@ export default new Router({
       path: '/lunTanMain',
       name: "lunTanMain",
       component: LunTanMain
+    },
+    {
+      path: "/lunTanEdit",
+      name: "lunTanEdit",
+      component: LunTanEdit
+    },
+    {
+      path: "/lunTanPage",
+      name: "lunTanPage",
+      component: LunTanPage
     },
     {
       path: "*",

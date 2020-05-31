@@ -93,15 +93,64 @@
                   <i class="el-icon-edit"></i>
                   <el-link type="info" @click="editUserInfo=true">编辑个人信息</el-link>
                     <el-dialog
-                      title="提示"
-                      :visible.sync="editUserInfo"
-                      width="30%"
-                      center>
-                      <span>需要注意的是内容是默认不居中的</span>
-                      <span slot="footer" class="dialog-footer">
-                      <el-button @click="centerDialogVisible = false">取 消</el-button>
-                      <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
-                    </span>
+                      title="编辑个人信息" :visible.sync="editUserInfo" width="50%" style="z-index: 999" center>
+                      <span>
+                        <el-form ref="form" :model="form" label-width="80px" v-if="isEditInfo">
+                          <el-form-item>
+                            <!--上传文件-->
+                            <el-upload action="#" list-type="picture-card" :auto-upload="false">
+                                <i slot="default" class="el-icon-plus"></i>
+                                <div slot="file" slot-scope="{file}">
+                                  <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
+                                  <span class="el-upload-list__item-actions">
+                                    <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
+                                      <i class="el-icon-zoom-in"></i>
+                                    </span>
+                                    <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleDownload(file)">
+                                      <i class="el-icon-download"></i>
+                                    </span>
+                                    <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
+                                      <i class="el-icon-delete"></i>
+                                    </span>
+                                  </span>
+                                </div>
+                            </el-upload>
+                          </el-form-item>
+                          <el-form-item>
+                            <el-input placeholder="修改姓名" v-model="form.username"></el-input>
+                          </el-form-item>
+                          <el-form-item>
+                            <el-input placeholder="修改昵称" v-model="form.nickname"></el-input>
+                          </el-form-item>
+                          <el-form-item>
+                            <el-input placeholder="修改个人介绍" v-model="form.userIntroduction"></el-input>
+                          </el-form-item>
+                          <el-form-item>
+                            <el-divider content-position="center">
+                              <el-button type="primary" @click="onSubmit">确认修改</el-button>
+                              <el-button @click="toEditInfo">切换到修改密码</el-button>
+                            </el-divider>
+                          </el-form-item>
+                        </el-form>
+
+                        <el-form ref="form" :model="form" label-width="80px" v-if="!isEditInfo">
+                          <el-form-item>
+                            <el-input placeholder="请输入修改前密码" v-model="form.username"></el-input>
+                          </el-form-item>
+                          <el-form-item>
+                            <el-input placeholder="请输入修改后密码" v-model="form.nickname"></el-input>
+                          </el-form-item>
+                           <el-form-item>
+                            <el-input placeholder="请再次输入修改后密码" v-model="form.nickname"></el-input>
+                          </el-form-item>
+                          <el-form-item>
+                            <el-divider content-position="center">
+                              <el-button type="primary" @click="onSubmit">立即修改密码</el-button>
+                              <el-button @click="toEditInfo">切换到修改个人信息</el-button>
+                            </el-divider>
+                          </el-form-item>
+                        </el-form>
+                      </span>
                     </el-dialog>
                 </div>
                 </el-header>
@@ -128,7 +177,7 @@
                     </div></el-col>
                     <el-col :span="12">
                       <div class="grid-content bg-purple-light" align="center">
-                      <el-button type="success" round>发布论坛</el-button>
+                      <el-button type="success" @click="toLunTanPage" round>发布论坛</el-button>
                     </div></el-col>
                   </el-row>
 
@@ -220,12 +269,17 @@ export default {
         userPassword: "",
         userIntroduction: ""
       },
+      dialogImageUrl: '',
+      dialogVisible: false,
+      disabled: false,
       userInfo: {
         username: "小龙",
         nickname: "小龙",
         userHeadimg: "https://images.pexels.com/photos/4450053/pexels-photo-4450053.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
         userIntroduction: "菜鸡程序员"
       },
+      //是否修改个人信息
+      isEditInfo: true,
       //是否登录
       isNotLogin: true,
       //注册还是登录
@@ -275,6 +329,22 @@ export default {
     },
     toWriteLunTan(){
       this.isRegistered = !this.isRegistered
+    },
+    toLunTanPage(){
+      this.$router.replace("/lunTanEdit")
+    },
+    toEditInfo(){
+      this.isEditInfo = !this.isEditInfo
+    },
+    handleRemove(file) {
+      console.log(file);
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    handleDownload(file) {
+      console.log(file);
     }
   }
 }

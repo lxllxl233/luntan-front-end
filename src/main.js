@@ -9,12 +9,14 @@ import 'element-ui/lib/theme-chalk/index.css'
 import InfiniteLoading from 'vue-infinite-loading';
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+import showdown from 'showdown'
 
 Vue.config.productionTip = false
 
 Vue.use(EL)
 Vue.use(InfiniteLoading)
 Vue.use(mavonEditor)
+Vue.use(showdown)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
