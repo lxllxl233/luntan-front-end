@@ -10,6 +10,7 @@
     "start": "npm run dev"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "element-ui": "^2.13.2",
     "html-loader": "^1.1.0",
     "markdown-loader": "^5.1.0",

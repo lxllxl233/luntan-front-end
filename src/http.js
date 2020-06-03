@@ -1,0 +1,36 @@
+import axios from 'axios'
+//配置全局的 axios
+const http = axios.create({
+  baseURL: 'http://localhost:8081/api',
+  headers: {
+  }
+});
+//请求拦截器
+http.interceptors.request.use(config => {
+  console.log(localStorage.token+":before")
+  if (localStorage.token) {
+    config.headers.Authorization = `Bearer ${localStorage.token}`
+    config.headers.Authorization = `Bearer ${localStorage.getItem("userId")}`
+    console.log(localStorage.token+":after")
+  }
+  return config
+}, err => {
+  return Promise.reject(err)
+});
+
+//响应拦截器
+http.interceptors.response.use(res => {
+  return res
+}, err => {
+    const errorMessage = err.response.data.message
+    const errorStatus = err.response.status
+
+    if (errorMessage) {
+      Vue.prototype.$message({
+        type: 'error',
+        message: errorMessage
+      })
+    }
+  }
+);
+export default http

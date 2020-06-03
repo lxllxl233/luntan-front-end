@@ -92,8 +92,7 @@
                   <div align="center">
                   <i class="el-icon-edit"></i>
                   <el-link type="info" @click="editUserInfo=true">编辑个人信息</el-link>
-                    <el-dialog
-                      title="编辑个人信息" :visible.sync="editUserInfo" width="50%" style="z-index: 999" center>
+                    <el-dialog title="编辑个人信息" :visible.sync="editUserInfo" width="50%" style="z-index: 999" center append-to-body="true">
                       <span>
                         <el-form ref="form" :model="form" label-width="80px" v-if="isEditInfo">
                           <el-form-item>
@@ -222,16 +221,16 @@
               </el-form-item>
             </el-form>
 
-            <el-form ref="form" :model="form" label-width="80px" v-if="!isRegistered">
+            <el-form ref="form" :model="loginForm" label-width="80px" v-if="!isRegistered">
               <el-form-item>
-                <el-input placeholder="请输入手机号" v-model="form.username"></el-input>
+                <el-input placeholder="请输入手机号" v-model="loginForm.userPhone"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-input placeholder="请输入密码" v-model="form.nickname"></el-input>
+                <el-input placeholder="请输入密码" v-model="loginForm.password"></el-input>
               </el-form-item>
               <el-form-item>
                 <el-divider content-position="center">
-                  <el-button type="primary" @click="onSubmit">立即登录</el-button>
+                  <el-button type="primary" @click="onLogin">立即登录</el-button>
                   <el-button @click="toLogin">切换到注册</el-button>
                 </el-divider>
               </el-form-item>
@@ -268,6 +267,10 @@ export default {
         userPhone: "",
         userPassword: "",
         userIntroduction: ""
+      },
+      loginForm: {
+        userPhone: "",
+        password: ""
       },
       dialogImageUrl: '',
       dialogVisible: false,
@@ -345,7 +348,23 @@ export default {
     },
     handleDownload(file) {
       console.log(file);
+    },
+    //登录函数
+    onLogin(){
+      this.$http.post("/user/userLogin",this.loginForm).then(
+        (response)=>{
+          localStorage.setItem("token",response.data.data.token)
+          localStorage.setItem("userId",response.data.data.userId)
+          console.log(response)
+          console.log(response.data.data.token)
+          console.log(response.data.data.userId)
+        },(err)=>{
+          console.log(err)
+        }
+      )
     }
+    //注册函数
+
   }
 }
 </script>
