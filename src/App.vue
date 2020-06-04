@@ -116,17 +116,17 @@
                             </el-upload>
                           </el-form-item>
                           <el-form-item>
-                            <el-input placeholder="修改姓名" v-model="form.username"></el-input>
+                            <el-input placeholder="修改姓名" v-model="changeUserInfo.username"></el-input>
                           </el-form-item>
                           <el-form-item>
-                            <el-input placeholder="修改昵称" v-model="form.nickname"></el-input>
+                            <el-input placeholder="修改昵称" v-model="changeUserInfo.nickname"></el-input>
                           </el-form-item>
                           <el-form-item>
-                            <el-input placeholder="修改个人介绍" v-model="form.userIntroduction"></el-input>
+                            <el-input placeholder="修改个人介绍" v-model="changeUserInfo.userIntroduction"></el-input>
                           </el-form-item>
                           <el-form-item>
                             <el-divider content-position="center">
-                              <el-button type="primary" @click="onSubmit">确认修改</el-button>
+                              <el-button type="primary" @click="onChangeUserInfo">确认修改</el-button>
                               <el-button @click="toEditInfo">切换到修改密码</el-button>
                             </el-divider>
                           </el-form-item>
@@ -144,7 +144,7 @@
                           </el-form-item>
                           <el-form-item>
                             <el-divider content-position="center">
-                              <el-button type="primary" @click="onSubmit">立即修改密码</el-button>
+                              <el-button type="primary" @click="onChangePassword">立即修改密码</el-button>
                               <el-button @click="toEditInfo">切换到修改个人信息</el-button>
                             </el-divider>
                           </el-form-item>
@@ -324,8 +324,24 @@ export default {
         this.count += 2
       }
     },
-    onSubmit() {
-      console.log('submit!');
+    onChangeUserInfo() {
+      let userId = localStorage.getItem("userId");
+      this.changeUserInfo.id = userId;
+      this.$http.post("/user/userChangeInfo",this.changeUserInfo).then(
+        (res)=>{
+          //修改成功后回显信息
+          console.log(res)
+          this.userInfo.username = this.changeUserInfo.username
+          this.userInfo.nickname = this.changeUserInfo.nickname
+          this.userInfo.userHeadimg = this.changeUserInfo.userHeadimg
+          this.userInfo.userIntroduction = this.changeUserInfo.userIntroduction
+        },(err)=>{
+          console.log(err)
+        }
+      )
+    },
+    onChangePassword(){
+      //修改密码
     },
     toLogin(){
       this.isRegistered = !this.isRegistered
