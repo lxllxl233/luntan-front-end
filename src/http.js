@@ -9,8 +9,8 @@ const http = axios.create({
 http.interceptors.request.use(config => {
   console.log(localStorage.token+":before")
   if (localStorage.token) {
-    config.headers.Authorization = `Bearer ${localStorage.token}`
-    config.headers.Authorization = `Bearer ${localStorage.getItem("userId")}`
+    config.headers.token = `${localStorage.token}`
+    config.headers.userId = `${localStorage.getItem("userId")}`
     console.log(localStorage.token+":after")
   }
   return config

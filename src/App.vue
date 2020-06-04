@@ -97,7 +97,7 @@
                         <el-form ref="form" :model="form" label-width="80px" v-if="isEditInfo">
                           <el-form-item>
                             <!--上传文件-->
-                            <el-upload action="#" list-type="picture-card" :auto-upload="false">
+                            <el-upload action="#" :http-request="myUpload" list-type="picture-card" :auto-upload="true">
                                 <i slot="default" class="el-icon-plus"></i>
                                 <div slot="file" slot-scope="{file}">
                                   <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
@@ -188,11 +188,7 @@
       <el-menu-item>
         <el-button type="text" @click="centerDialogVisible = true" v-if="isNotLogin">登录/注册</el-button>
 
-        <el-dialog
-          title="登录/注册"
-          :visible.sync="centerDialogVisible"
-          width="45%"
-          center="false">
+        <el-dialog title="登录/注册" :visible.sync="centerDialogVisible" width="45%" center="false">
           <span>
             <el-form ref="form" :model="form" label-width="80px" v-if="isRegistered">
               <el-form-item>
@@ -215,7 +211,7 @@
               </el-form-item>
               <el-form-item>
                 <el-divider content-position="center">
-                  <el-button type="primary" @click="onSubmit">立即注册</el-button>
+                  <el-button type="primary" @click="onRegistered">立即注册</el-button>
                   <el-button @click="toLogin">切换到登录</el-button>
                 </el-divider>
               </el-form-item>
@@ -276,12 +272,19 @@ export default {
       dialogVisible: false,
       disabled: false,
       userInfo: {
-        username: "小龙",
-        nickname: "小龙",
-        userHeadimg: "https://images.pexels.com/photos/4450053/pexels-photo-4450053.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-        userIntroduction: "菜鸡程序员"
+        username: "",
+        nickname: "",
+        userHeadimg: "",
+        userIntroduction: ""
       },
-      //是否修改个人信息
+      changeUserInfo: {
+        id: 0,
+        nickname: "",
+        userHeadimg: "",
+        userIntroduction: "",
+        username: ""
+      },
+        //是否修改个人信息
       isEditInfo: true,
       //是否登录
       isNotLogin: true,
@@ -347,24 +350,63 @@ export default {
       this.dialogVisible = true;
     },
     handleDownload(file) {
-      console.log(file);
+
     },
     //登录函数
     onLogin(){
       this.$http.post("/user/userLogin",this.loginForm).then(
         (response)=>{
+          this.$message(response.data.msg);
           localStorage.setItem("token",response.data.data.token)
           localStorage.setItem("userId",response.data.data.userId)
-          console.log(response)
-          console.log(response.data.data.token)
-          console.log(response.data.data.userId)
+          this.$http.get("/user/lookUserInfo?userPhone="+this.loginForm.userPhone).then(
+            (res)=>{
+              let data = res.data.data;
+              this.userInfo.username = data.username
+              this.userInfo.nickname = data.nickname
+              this.userInfo.userHeadimg = data.userHeadimg
+              this.userInfo.userIntroduction = data.userIntroduction
+              this.centerDialogVisible = false
+            },
+            (err)=>{
+              console.log(err)
+            }
+          )
         },(err)=>{
           console.log(err)
         }
       )
-    }
+    },
     //注册函数
-
+    onRegistered(){
+      this.$http.post("/user/userRegistered",this.form).then(
+        (response)=>{
+          this.$message(response.data.msg);
+        },
+        (err)=>{
+        }
+      )
+    },
+    myUpload(content){
+      var form = new FormData();
+      form.append("file", content.file);
+      form.append("fileName",content.file.name)
+      this.$http.post("/upload/uploadFile", form).then(res=>{
+        if(res.data.code != 200) {
+          content.onError('文件上传失败, code:' + res.data.code)
+        } else {
+          this.changeUserInfo.userHeadimg = res.data.data
+        }
+      }).catch(error=>{
+        if (error.response) {
+          content.onError('文件上传失败,' + error.response.data);
+        } else if(error.request) {
+          content.onError('文件上传失败，服务器端无响应')
+        } else {
+          content.onError('文件上传失败，请求封装失败')
+        }
+      })
+    }
   }
 }
 </script>
