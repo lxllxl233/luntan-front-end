@@ -134,13 +134,13 @@
 
                         <el-form ref="form" :model="form" label-width="80px" v-if="!isEditInfo">
                           <el-form-item>
-                            <el-input placeholder="请输入修改前密码" v-model="form.username"></el-input>
+                            <el-input placeholder="请输入修改前密码" v-model="userChangePasswordInfo.bPassword"></el-input>
                           </el-form-item>
                           <el-form-item>
-                            <el-input placeholder="请输入修改后密码" v-model="form.nickname"></el-input>
+                            <el-input placeholder="请输入修改后密码" v-model="userChangePasswordInfo.password"></el-input>
                           </el-form-item>
                            <el-form-item>
-                            <el-input placeholder="请再次输入修改后密码" v-model="form.nickname"></el-input>
+                            <el-input placeholder="请再次输入修改后密码" v-model="userChangePasswordInfo.password"></el-input>
                           </el-form-item>
                           <el-form-item>
                             <el-divider content-position="center">
@@ -255,7 +255,6 @@ export default {
   components: {
   },
   data() {
-
     return {
       form: {
         username: "",
@@ -276,6 +275,11 @@ export default {
         nickname: "",
         userHeadimg: "",
         userIntroduction: ""
+      },
+      userChangePasswordInfo: {
+        bPassword: "string",
+        password: "string",
+        userId: 0
       },
       changeUserInfo: {
         id: 0,
@@ -327,20 +331,34 @@ export default {
     onChangeUserInfo() {
       let userId = localStorage.getItem("userId");
       this.changeUserInfo.id = userId;
-      this.$http.post("/user/userChangeInfo",this.changeUserInfo).then(
+      this.$http.post("/api/user/userChangeInfo",this.changeUserInfo).then(
         (res)=>{
           //修改成功后回显信息
-          console.log(res)
           this.userInfo.username = this.changeUserInfo.username
           this.userInfo.nickname = this.changeUserInfo.nickname
           this.userInfo.userHeadimg = this.changeUserInfo.userHeadimg
           this.userInfo.userIntroduction = this.changeUserInfo.userIntroduction
+          this.editUserInfo = false
+
         },(err)=>{
           console.log(err)
         }
       )
     },
     onChangePassword(){
+      this.userChangePasswordInfo.userId = localStorage.getItem("userId")
+      this.$http.post("/api/user/userChangePassword",this.userChangePasswordInfo).then(
+        (response)=>{
+          if (response.data.code == 200){
+            this.editUserInfo = false
+            this.$message(response.data.msg);
+          }else {
+            this.$message(response.data.msg);
+          }
+        },(err)=>{
+
+        }
+      )
       //修改密码
     },
     toLogin(){
@@ -348,12 +366,16 @@ export default {
     },
     toWriteBlog(){
       this.$router.replace("/writeBlog")
+      this.innerDrawer = false
+      this.drawer = false
     },
     toWriteLunTan(){
       this.isRegistered = !this.isRegistered
     },
     toLunTanPage(){
       this.$router.replace("/lunTanEdit")
+      this.innerDrawer = false
+      this.drawer = false
     },
     toEditInfo(){
       this.isEditInfo = !this.isEditInfo
@@ -370,12 +392,12 @@ export default {
     },
     //登录函数
     onLogin(){
-      this.$http.post("/user/userLogin",this.loginForm).then(
+      this.$http.post("/api/user/userLogin",this.loginForm).then(
         (response)=>{
           this.$message(response.data.msg);
           localStorage.setItem("token",response.data.data.token)
           localStorage.setItem("userId",response.data.data.userId)
-          this.$http.get("/user/lookUserInfo?userPhone="+this.loginForm.userPhone).then(
+          this.$http.get("/api/user/lookUserInfo?userPhone="+this.loginForm.userPhone).then(
             (res)=>{
               let data = res.data.data;
               this.userInfo.username = data.username
@@ -383,6 +405,10 @@ export default {
               this.userInfo.userHeadimg = data.userHeadimg
               this.userInfo.userIntroduction = data.userIntroduction
               this.centerDialogVisible = false
+              this.changeUserInfo.username = data.username
+              this.changeUserInfo.nickname = data.nickname
+              this.changeUserInfo.userIntroduction = data.userIntroduction
+              this.changeUserInfo.userHeadimg = data.userHeadimg
             },
             (err)=>{
               console.log(err)
@@ -395,7 +421,7 @@ export default {
     },
     //注册函数
     onRegistered(){
-      this.$http.post("/user/userRegistered",this.form).then(
+      this.$http.post("/api/user/userRegistered",this.form).then(
         (response)=>{
           this.$message(response.data.msg);
         },
@@ -407,7 +433,7 @@ export default {
       var form = new FormData();
       form.append("file", content.file);
       form.append("fileName",content.file.name)
-      this.$http.post("/upload/uploadFile", form).then(res=>{
+      this.$http.post("/api/upload/uploadFile", form).then(res=>{
         if(res.data.code != 200) {
           content.onError('文件上传失败, code:' + res.data.code)
         } else {

@@ -1,7 +1,6 @@
 import axios from 'axios'
 //配置全局的 axios
 const http = axios.create({
-  baseURL: 'http://localhost:8081/api',
   headers: {
   }
 });
@@ -11,7 +10,6 @@ http.interceptors.request.use(config => {
   if (localStorage.token) {
     config.headers.token = `${localStorage.token}`
     config.headers.userId = `${localStorage.getItem("userId")}`
-    console.log(localStorage.token+":after")
   }
   return config
 }, err => {
@@ -24,7 +22,6 @@ http.interceptors.response.use(res => {
 }, err => {
     const errorMessage = err.response.data.message
     const errorStatus = err.response.status
-
     if (errorMessage) {
       Vue.prototype.$message({
         type: 'error',
