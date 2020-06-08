@@ -365,7 +365,7 @@ export default {
       this.isRegistered = !this.isRegistered
     },
     toWriteBlog(){
-      this.$router.replace("/writeBlog")
+      this.$router.push("/writeBlog")
       this.innerDrawer = false
       this.drawer = false
     },
@@ -373,7 +373,7 @@ export default {
       this.isRegistered = !this.isRegistered
     },
     toLunTanPage(){
-      this.$router.replace("/lunTanEdit")
+      this.$router.push("/lunTanEdit")
       this.innerDrawer = false
       this.drawer = false
     },

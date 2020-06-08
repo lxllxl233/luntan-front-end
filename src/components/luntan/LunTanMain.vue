@@ -2,7 +2,7 @@
 
   <el-container>
     <el-container>
-      <el-aside width="600px">
+      <el-aside width="600px"  style="height: 800px">
         <el-col :span="12">
           <el-divider content-position="center">论坛分类展示</el-divider>
           <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">

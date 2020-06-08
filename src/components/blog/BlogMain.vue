@@ -2,7 +2,7 @@
 
   <el-container>
     <el-container>
-      <el-aside width="600px">
+      <el-aside width="600px" style="height: 800px">
         <el-col :span="12">
           <el-divider content-position="center">博客分类展示</el-divider>
           <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
@@ -13,7 +13,7 @@
               </template>
 
               <el-menu-item-group v-for="catalogV2 in catalog.option" :key="catalogV2.id">
-                <el-menu-item :index="catalog.value.id +'-'+ catalogV2.id">{{catalogV2.name}}</el-menu-item>
+                <el-menu-item :index="catalog.value.id +'-'+ catalogV2.id" @click="getBlogs(catalogV2.id)">{{catalogV2.name}}</el-menu-item>
               </el-menu-item-group>
 
             </el-submenu>
@@ -25,20 +25,20 @@
         <el-main>
 
 
-            <el-row v-for="i in 3" :key="i">
-              <el-col :span="6" v-for="(o, index) in 3" :key="o" :offset="index > 0 ? 2 : 0">
+
+              <el-row :span="6" v-for="(o, index) in blogList" :key="o" :offset="index > 0 ? 2 : 0">
                 <el-card :body-style="{ padding: '0px' }">
                   <img src="https://images.pexels.com/photos/4328962/pexels-photo-4328962.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="image">
                   <div style="padding: 14px;">
-                    <span>博客内容</span>
+                    <span>{{o.title}}</span>
                     <div class="bottom clearfix">
-                      <time class="time">{{ currentDate }}</time>
-                      <el-button type="text" class="button">查看博客</el-button>
+                      <time class="time">{{ o.createTime }}</time>
+                      <el-button type="text" class="button" @click="lookBlog(o.id)">查看博客</el-button>
                     </div>
                   </div>
                 </el-card>
-              </el-col>
-            </el-row>
+              </el-row>
+
 
 
 
@@ -59,7 +59,8 @@
       data() {
           return {
             currentDate: new Date(),
-            catalogList: []
+            catalogList: [],
+            blogList: []
           };
         },
         methods: {
@@ -73,6 +74,21 @@
 
               }
             )
+          },
+          getBlogs: function (v2Id) {
+            console.log(v2Id)
+            this.$http.get("/api/blog/getV2Blog?v2Id="+v2Id).then(
+              (response)=>{
+                console.log(response.data.data)
+                this.blogList = response.data.data
+
+              },(err)=>{
+                console.log(err)
+              }
+            )
+          },
+          lookBlog: function (blogId) {
+            this.$router.push({path:'/blogPage/'+blogId})
           }
         }
     }

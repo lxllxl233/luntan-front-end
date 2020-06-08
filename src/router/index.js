@@ -30,8 +30,9 @@ export default new Router({
       component: Login
     },
     {
-      path: '/blogPage',
+      path: '/blogPage/:id',
       name: 'BlogPage',
+      props: true,
       component: BlogPage
     },
     {

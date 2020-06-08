@@ -15,15 +15,14 @@
           <el-divider content-position="center"> <el-button type="text" @click="dialogVisible = true">提交文章</el-button></el-divider>
         </el-row>
         <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
-          <div>请选择博客的分类</div>
+          <el-input v-model="blog.title" placeholder="请输入博客标题"></el-input>
           <div class="block">
-            <el-cascader v-model="value" :options="option" :props="{ expandTrigger: 'hover' }" @change="handleChange">
-              {{option.value}}
+            <el-cascader v-model="value" :options="option" :props="{ expandTrigger: 'hover' }" placeholder="请输入分类" @change="handleChange">
             </el-cascader>
           </div>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+            <el-button type="primary" @click="submit">提交</el-button>
           </span>
         </el-dialog>
       </div>
@@ -55,8 +54,13 @@
         content:'', // 输入的markdown
         html:'',    // 及时转的html
         src: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
-        htmlMD: "<h2><a id=\"_0\"></a>题目</h2> <blockquote> <p>在第一行我们写上一个 0。接下来的每一行，将前一行中的0替换为01，1替换为10。</p> <p>给定行数 N 和序数 K，返回第 N 行中第 K个字符。（K从1开始）</p> <p>例子:</p> <p>输入: N = 1, K = 1<br /> 输出: 0</p> <p>输入: N = 2, K = 1<br /> 输出: 0</p> <p>输入: N = 2, K = 2<br /> 输出: 1</p> <p>输入: N = 4, K = 5<br /> 输出: 1</p> <p>解释:<br /> 第一行: 0<br /> 第二行: 01<br /> 第三行: 0110<br /> 第四行: 01101001</p> <p>注意：</p> <p>N 的范围 [1, 30].<br /> K 的范围 [1, 2^(N-1)].</p> <p>===============================================================================</p> <p>给定一个 24 小时制（小时:分钟）的时间列表，找出列表中任意两个时间的最小时间差并已分钟数表示。</p> <p>示例 1：</p> <p>输入: [“23:59”,“00:00”]<br /> 输出: 1</p> </blockquote>",
-        dialogVisible: false
+        dialogVisible: false,
+        blog: {
+          text: "",
+          title: "",
+          userId: 0,
+          v2Id: 0
+        }
       }
     },
     methods: {
@@ -73,8 +77,21 @@
       getAllBlogCatalog: function () {
         this.$http.get("/api/user/getAllBlogCatalog").then(
           (response) => {
-            let data = response.data.data;
-            this.option = data
+            let data = []
+            data = response.data.data;
+            let dt = new Array()
+            data.forEach(dataKey => {
+              let id = dataKey.value.id;
+              let name = dataKey.value.name;
+              let arr = new Array()
+              dataKey.option.forEach(optionKey => {
+                let id1 = optionKey.id;
+                let name1 = optionKey.name;
+                arr.push({"value":id1,"label":name1})
+              })
+              dt.push({"value":id,"label":name,"children":arr})
+            })
+              this.option = dt
             console.log(this.option)
           }, (err) => {
 
@@ -82,7 +99,20 @@
         )
       },
       handleChange(value) {
-        console.log(value);
+        this.blog.v2Id = value[1]
+      },
+      submit(){
+        this.blog.userId = localStorage.getItem("userId")
+        this.blog.text = this.html
+        this.$http.post("/api/blog/releaseBlog",this.blog).then(
+          (response)=>{
+            this.$message(response.data.msg);
+            this.dialogVisible = false
+          },(err)=>{
+            this.dialogVisible = false
+            console.log(err)
+          }
+        )
       }
     },
     mounted() {

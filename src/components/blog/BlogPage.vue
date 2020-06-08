@@ -2,26 +2,43 @@
   <el-container>
 
     <el-main>
-      <el-page-header @back="goBack" content="博客详情">
-      </el-page-header>
-    </el-main>
-    <el-main>
+      <el-page-header @back="goBack" content="博客详情"></el-page-header>
+
       <div class="block">
         <el-image style="width: 100%; height: 500px" :src="src"></el-image>
       </div>
-    </el-main>
-    <el-main>
 
       <el-row :gutter="20">
         <el-col :span="4"><div class="grid-content bg-purple">>>></div></el-col>
         <el-col :span="16">
-          <div v-html="htmlMD"></div><div class="grid-content bg-purple"></div></el-col>
+          <div v-html="htmlMD"></div>
+          <div class="grid-content bg-purple">
+          </div>
+        </el-col>
         <el-col :span="4"><div class="grid-content bg-purple"><<<</div></el-col>
       </el-row>
 
-
+      <el-input type="textarea" autosize="true" placeholder="觉得不错,发个评论呗..............." v-model="comment"></el-input>
+      <el-collapse v-model="activeNames" @change="handleChange">
+        <el-collapse-item title="一致性 Consistency" name="1">
+          <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
+          <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
+        </el-collapse-item>
+        <el-collapse-item title="反馈 Feedback" name="2">
+          <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
+          <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
+        </el-collapse-item>
+        <el-collapse-item title="效率 Efficiency" name="3">
+          <div>简化流程：设计简洁直观的操作流程；</div>
+          <div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>
+          <div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
+        </el-collapse-item>
+        <el-collapse-item title="可控 Controllability" name="4">
+          <div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
+          <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
+        </el-collapse-item>
+      </el-collapse>
     </el-main>
-    <el-footer>Footer</el-footer>
 
   </el-container>
 </template>
@@ -30,19 +47,73 @@
   import Login from "../login/Login";
   export default {
     name: "",
+    props: {
+      id: 0
+    },
+    created() {
+      let id = this.$route.params.id;
+      this.$http.get("/api/blog/getBlogById?blogId="+id).then(
+        (response)=>{
+          console.log(response.data.data)
+          this.htmlMD = response.data.data.text
+        },(err)=>{
+
+        }
+      )
+      //获取博客评论
+      this.$http.get("/api/blog/getComment?blogId="+id).then(
+        (response)=>{
+          this.comments = response.data.data
+          console.log(response)
+        },(err)=>{
+          console.log(err)
+        }
+      )
+    },
     data() {
       return {
+        activeNames: ['1'],
+        title: "",
+        comment: '',
+        comments: [], //博客评论存放数组
         circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
         content:'', // 输入的markdown
         html:'',    // 及时转的html
         src: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
-        htmlMD: "<h2><a id=\"_0\"></a>题目</h2> <blockquote> <p>在第一行我们写上一个 0。接下来的每一行，将前一行中的0替换为01，1替换为10。</p> <p>给定行数 N 和序数 K，返回第 N 行中第 K个字符。（K从1开始）</p> <p>例子:</p> <p>输入: N = 1, K = 1<br /> 输出: 0</p> <p>输入: N = 2, K = 1<br /> 输出: 0</p> <p>输入: N = 2, K = 2<br /> 输出: 1</p> <p>输入: N = 4, K = 5<br /> 输出: 1</p> <p>解释:<br /> 第一行: 0<br /> 第二行: 01<br /> 第三行: 0110<br /> 第四行: 01101001</p> <p>注意：</p> <p>N 的范围 [1, 30].<br /> K 的范围 [1, 2^(N-1)].</p> <p>===============================================================================</p> <p>给定一个 24 小时制（小时:分钟）的时间列表，找出列表中任意两个时间的最小时间差并已分钟数表示。</p> <p>示例 1：</p> <p>输入: [“23:59”,“00:00”]<br /> 输出: 1</p> </blockquote>"
+        htmlMD: "",
+        commentRequest: {
+          bUserId: 0, //回复评论的id
+          blogId: 0,
+          pId: 0,
+          text: "string",
+          userId: 0
+        }
       }
     },
     components: [Login],
     methods: {
       goBack() {
-        this.$router.replace("/")
+        this.$router.push("/")
+      },
+      //提交博客评论
+      submitComment(){
+        //   bUserId: 0, //回复评论的id
+        //   blogId: 0,
+        //   pId: 0,
+        //   text: "string",
+        //   userId: 0
+        this.commentRequest.userId = localStorage.getItem("userId")
+        this.commentRequest.blogId = this.$route.params.id;
+        this.commentRequest.pId = 0;
+        this.commentRequest.text = this.comment;
+        this.commentRequest.bUserId = 0;
+        this.$http.post("/api/blog/releaseComment",this.commentRequest).then(
+          (response)=>{
+            console.log(response)
+          },(err)=>{
+            console.log(err)
+          }
+        )
       }
     }
   }
