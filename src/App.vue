@@ -1,248 +1,248 @@
 <template>
   <div id="app">
-<el-container>
-  <el-header>
-    <el-menu
-      router="true"
-      :default-active="activeIndex2"
-      class="el-menu-demo"
-      mode="horizontal"
-      @select="handleSelect"
-      background-color="#545c64"
-      text-color="#fff"
-      active-text-color="#ffd04b">
-      <el-menu-item index="/login">首页</el-menu-item>
-      <el-menu-item index="/blogMain">博客</el-menu-item>
-      <el-menu-item index="/lunTanMain">论坛</el-menu-item>
-      <el-submenu index="4">
-        <template slot="title">网站工具</template>
-        <el-menu-item index="4-1">自动化爬虫(施工中...)</el-menu-item>
-        <el-menu-item index="4-2">json在线格式化</el-menu-item>
-        <el-menu-item index="4-3">常见算法演示</el-menu-item>
-      </el-submenu>
-      <el-menu-item index="#"><el-button @click="drawer = true" type="primary" style="margin-left: 16px;">
-        网站公共聊天室
-      </el-button>
+    <el-container>
+      <el-header v-show="showMe">
+        <el-menu
+          router="true"
+          :default-active="activeIndex2"
+          class="el-menu-demo"
+          mode="horizontal"
+          @select="handleSelect"
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b">
+          <el-menu-item index="/login">首页</el-menu-item>
+          <el-menu-item index="/blogMain">博客</el-menu-item>
+          <el-menu-item index="/lunTanMain">论坛</el-menu-item>
+          <el-submenu index="4">
+            <template slot="title">网站工具</template>
+            <el-menu-item index="4-1">自动化爬虫(施工中...)</el-menu-item>
+            <el-menu-item index="4-2">json在线格式化</el-menu-item>
+            <el-menu-item index="4-3">常见算法演示</el-menu-item>
+          </el-submenu>
+          <el-menu-item index="#"><el-button @click="drawer = true" type="primary" style="margin-left: 16px;">
+            网站公共聊天室
+          </el-button>
 
-        <el-drawer
-          title="公共聊天站"
-          :visible.sync="drawer"
-          size="50%">
-          <div>
-            <el-button @click="innerDrawer = true">我的信息</el-button>
-            <p>
-              <el-container>
-                <el-header>
-                  <el-alert
-                    title="连接聊天室成功"
-                    type="success">
-                  </el-alert>
-                </el-header>
-                <el-main>
-
-                  <!-- 无限滚动条 -->
-                  <template>
-                    <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
-                      <li v-for="i in count" class="infinite-list-item">
-                        <el-container>
-                          <el-aside width="50px">
-                              <span class="demo-basic--circle">
-                                <span class="block"><el-avatar :size="50" :src="circleUrl"></el-avatar></span>
-                              </span>
-                          </el-aside>
-
-                          <el-container>
-                            <el-header height="10px" style="font-size: 8px;">
-                              player
-                            </el-header>
-                            <el-main >
-                              <el-tag type="label"  effect="dark">{{i}}</el-tag>
-                            </el-main>
-                          </el-container>
-                        </el-container>
-                      </li>
-                    </ul>
-                  </template>
-
-                </el-main>
-                <el-footer>
-                  <el-input
-                    type="textarea"
-                    autosize
-                    placeholder="请输入内容"
-                    v-model="textarea1">
-                  </el-input>
-                  <div style="margin: 20px 0;"></div>
-                </el-footer>
-              </el-container>
-            </p>
             <el-drawer
-              title="我的信息"
-              :append-to-body="true"
-              :before-close="handleClose"
-              :visible.sync="innerDrawer">
-              <el-container>
+              title="公共聊天站"
+              :visible.sync="drawer"
+              size="50%">
+              <div>
+                <el-button @click="innerDrawer = true">我的信息</el-button>
+                <p>
+                  <el-container>
+                    <el-header>
+                      <el-alert
+                        title="连接聊天室成功"
+                        type="success">
+                      </el-alert>
+                    </el-header>
+                    <el-main>
 
-                <el-header>
-                  <el-divider content-position="center">
-                    <div class="demo-basic--circle">
-                      <div class="block"><el-avatar :size="50" :src="userInfo.userHeadimg"></el-avatar></div>
-                    </div>
-                  </el-divider>
-                  <div align="center">
-                  <i class="el-icon-edit"></i>
-                  <el-link type="info" @click="editUserInfo=true">编辑个人信息</el-link>
-                    <el-dialog title="编辑个人信息" :visible.sync="editUserInfo" width="50%" style="z-index: 999" center append-to-body="true">
-                      <span>
-                        <el-form ref="form" :model="form" label-width="80px" v-if="isEditInfo">
-                          <el-form-item>
-                            <!--上传文件-->
-                            <el-upload action="#" :http-request="myUpload" list-type="picture-card" :auto-upload="true">
-                                <i slot="default" class="el-icon-plus"></i>
-                                <div slot="file" slot-scope="{file}">
-                                  <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
-                                  <span class="el-upload-list__item-actions">
-                                    <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
-                                      <i class="el-icon-zoom-in"></i>
-                                    </span>
-                                    <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleDownload(file)">
-                                      <i class="el-icon-download"></i>
-                                    </span>
-                                    <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
-                                      <i class="el-icon-delete"></i>
-                                    </span>
+                      <!-- 无限滚动条 -->
+                      <template>
+                        <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
+                          <li v-for="i in count" class="infinite-list-item">
+                            <el-container>
+                              <el-aside width="50px">
+                                  <span class="demo-basic--circle">
+                                    <span class="block"><el-avatar :size="50" :src="circleUrl"></el-avatar></span>
                                   </span>
-                                </div>
-                            </el-upload>
-                          </el-form-item>
-                          <el-form-item>
-                            <el-input placeholder="修改姓名" v-model="changeUserInfo.username"></el-input>
-                          </el-form-item>
-                          <el-form-item>
-                            <el-input placeholder="修改昵称" v-model="changeUserInfo.nickname"></el-input>
-                          </el-form-item>
-                          <el-form-item>
-                            <el-input placeholder="修改个人介绍" v-model="changeUserInfo.userIntroduction"></el-input>
-                          </el-form-item>
-                          <el-form-item>
-                            <el-divider content-position="center">
-                              <el-button type="primary" @click="onChangeUserInfo">确认修改</el-button>
-                              <el-button @click="toEditInfo">切换到修改密码</el-button>
-                            </el-divider>
-                          </el-form-item>
-                        </el-form>
+                              </el-aside>
 
-                        <el-form ref="form" :model="form" label-width="80px" v-if="!isEditInfo">
-                          <el-form-item>
-                            <el-input placeholder="请输入修改前密码" v-model="userChangePasswordInfo.bPassword"></el-input>
-                          </el-form-item>
-                          <el-form-item>
-                            <el-input placeholder="请输入修改后密码" v-model="userChangePasswordInfo.password"></el-input>
-                          </el-form-item>
-                           <el-form-item>
-                            <el-input placeholder="请再次输入修改后密码" v-model="userChangePasswordInfo.password"></el-input>
-                          </el-form-item>
-                          <el-form-item>
-                            <el-divider content-position="center">
-                              <el-button type="primary" @click="onChangePassword">立即修改密码</el-button>
-                              <el-button @click="toEditInfo">切换到修改个人信息</el-button>
-                            </el-divider>
-                          </el-form-item>
-                        </el-form>
-                      </span>
-                    </el-dialog>
-                </div>
-                </el-header>
-                <el-main>
-                  <el-divider content-position="center">
-                    姓名
-                  </el-divider>
-                  <div align="center">{{userInfo.username}}</div>
-                  <el-divider content-position="center">
-                    昵称
-                  </el-divider>
-                  <div align="center">{{userInfo.nickname}}</div>
-                  <el-divider content-position="center">
-                    个人介绍
-                  </el-divider>
-                  <div align="center">{{userInfo.userIntroduction}}</div>
-                  <el-divider content-position="center">
-                    操作
-                  </el-divider>
-                  <el-row>
-                    <el-col :span="12">
-                      <div class="grid-content bg-purple" align="center">
-                      <el-button type="success" round @click="toWriteBlog">发布博客</el-button>
-                    </div></el-col>
-                    <el-col :span="12">
-                      <div class="grid-content bg-purple-light" align="center">
-                      <el-button type="success" @click="toLunTanPage" round>发布论坛</el-button>
-                    </div></el-col>
-                  </el-row>
+                              <el-container>
+                                <el-header height="10px" style="font-size: 8px;">
+                                  player
+                                </el-header>
+                                <el-main >
+                                  <el-tag type="label"  effect="dark">{{i}}</el-tag>
+                                </el-main>
+                              </el-container>
+                            </el-container>
+                          </li>
+                        </ul>
+                      </template>
 
-                </el-main>
-              </el-container>
-            </el-drawer>
-          </div>
-        </el-drawer></el-menu-item>
-      <el-menu-item>
-        <el-button type="text" @click="centerDialogVisible = true" v-if="isNotLogin">登录/注册</el-button>
+                    </el-main>
+                    <el-footer>
+                      <el-input
+                        type="textarea"
+                        autosize
+                        placeholder="请输入内容"
+                        v-model="textarea1">
+                      </el-input>
+                      <div style="margin: 20px 0;"></div>
+                    </el-footer>
+                  </el-container>
+                </p>
+                <el-drawer
+                  title="我的信息"
+                  :append-to-body="true"
+                  :before-close="handleClose"
+                  :visible.sync="innerDrawer">
+                  <el-container>
 
-        <el-dialog title="登录/注册" :visible.sync="centerDialogVisible" width="45%" center="false">
-          <span>
-            <el-form ref="form" :model="form" label-width="80px" v-if="isRegistered">
-              <el-form-item>
-                <el-input placeholder="大侠留个姓名吧" v-model="form.username"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-input placeholder="留个昵称" v-model="form.nickname"></el-input>
-              </el-form-item>
-                 <el-form-item>
-                <el-input placeholder="填个电话" v-model="form.userPhone"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-input placeholder="请输入密码" v-model="form.userPassword"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-input placeholder="请再次输入密码" v-model="form.userPassword"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-input placeholder="最后,一句话介绍一下自己吧" v-model="form.userIntroduction"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-divider content-position="center">
-                  <el-button type="primary" @click="onRegistered">立即注册</el-button>
-                  <el-button @click="toLogin">切换到登录</el-button>
-                </el-divider>
-              </el-form-item>
-            </el-form>
+                    <el-header>
+                      <el-divider content-position="center">
+                        <div class="demo-basic--circle">
+                          <div class="block"><el-avatar :size="50" :src="userInfo.userHeadimg"></el-avatar></div>
+                        </div>
+                      </el-divider>
+                      <div align="center">
+                      <i class="el-icon-edit"></i>
+                      <el-link type="info" @click="editUserInfo=true">编辑个人信息</el-link>
+                        <el-dialog title="编辑个人信息" :visible.sync="editUserInfo" width="50%" style="z-index: 999" center append-to-body="true">
+                          <span>
+                            <el-form ref="form" :model="form" label-width="80px" v-if="isEditInfo">
+                              <el-form-item>
+                                <!--上传文件-->
+                                <el-upload action="#" :http-request="myUpload" list-type="picture-card" :auto-upload="true">
+                                    <i slot="default" class="el-icon-plus"></i>
+                                    <div slot="file" slot-scope="{file}">
+                                      <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
+                                      <span class="el-upload-list__item-actions">
+                                        <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
+                                          <i class="el-icon-zoom-in"></i>
+                                        </span>
+                                        <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleDownload(file)">
+                                          <i class="el-icon-download"></i>
+                                        </span>
+                                        <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
+                                          <i class="el-icon-delete"></i>
+                                        </span>
+                                      </span>
+                                    </div>
+                                </el-upload>
+                              </el-form-item>
+                              <el-form-item>
+                                <el-input placeholder="修改姓名" v-model="changeUserInfo.username"></el-input>
+                              </el-form-item>
+                              <el-form-item>
+                                <el-input placeholder="修改昵称" v-model="changeUserInfo.nickname"></el-input>
+                              </el-form-item>
+                              <el-form-item>
+                                <el-input placeholder="修改个人介绍" v-model="changeUserInfo.userIntroduction"></el-input>
+                              </el-form-item>
+                              <el-form-item>
+                                <el-divider content-position="center">
+                                  <el-button type="primary" @click="onChangeUserInfo">确认修改</el-button>
+                                  <el-button @click="toEditInfo">切换到修改密码</el-button>
+                                </el-divider>
+                              </el-form-item>
+                            </el-form>
 
-            <el-form ref="form" :model="loginForm" label-width="80px" v-if="!isRegistered">
-              <el-form-item>
-                <el-input placeholder="请输入手机号" v-model="loginForm.userPhone"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-input placeholder="请输入密码" v-model="loginForm.password"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-divider content-position="center">
-                  <el-button type="primary" @click="onLogin">立即登录</el-button>
-                  <el-button @click="toLogin">切换到注册</el-button>
-                </el-divider>
-              </el-form-item>
-            </el-form>
-          </span>
-        </el-dialog>
-      </el-menu-item>
+                            <el-form ref="form" :model="form" label-width="80px" v-if="!isEditInfo">
+                              <el-form-item>
+                                <el-input placeholder="请输入修改前密码" v-model="userChangePasswordInfo.bPassword"></el-input>
+                              </el-form-item>
+                              <el-form-item>
+                                <el-input placeholder="请输入修改后密码" v-model="userChangePasswordInfo.password"></el-input>
+                              </el-form-item>
+                               <el-form-item>
+                                <el-input placeholder="请再次输入修改后密码" v-model="userChangePasswordInfo.password"></el-input>
+                              </el-form-item>
+                              <el-form-item>
+                                <el-divider content-position="center">
+                                  <el-button type="primary" @click="onChangePassword">立即修改密码</el-button>
+                                  <el-button @click="toEditInfo">切换到修改个人信息</el-button>
+                                </el-divider>
+                              </el-form-item>
+                            </el-form>
+                          </span>
+                        </el-dialog>
+                    </div>
+                    </el-header>
+                    <el-main>
+                      <el-divider content-position="center">
+                        姓名
+                      </el-divider>
+                      <div align="center">{{userInfo.username}}</div>
+                      <el-divider content-position="center">
+                        昵称
+                      </el-divider>
+                      <div align="center">{{userInfo.nickname}}</div>
+                      <el-divider content-position="center">
+                        个人介绍
+                      </el-divider>
+                      <div align="center">{{userInfo.userIntroduction}}</div>
+                      <el-divider content-position="center">
+                        操作
+                      </el-divider>
+                      <el-row>
+                        <el-col :span="12">
+                          <div class="grid-content bg-purple" align="center">
+                          <el-button type="success" round @click="toWriteBlog">发布博客</el-button>
+                        </div></el-col>
+                        <el-col :span="12">
+                          <div class="grid-content bg-purple-light" align="center">
+                          <el-button type="success" @click="toLunTanPage" round>发布论坛</el-button>
+                        </div></el-col>
+                      </el-row>
 
-    </el-menu>
-  </el-header>
-  <router-view></router-view>
-  <el-footer>
-    <el-row :gutter="20">
-      <el-divider content-position="center">2020 lxl @<el-link href="https://github.com/lxllxl233" type="success">Github</el-link>.com</el-divider>
-    </el-row>
-  </el-footer>
+                    </el-main>
+                  </el-container>
+                </el-drawer>
+              </div>
+            </el-drawer></el-menu-item>
+          <el-menu-item>
+            <el-button type="text" @click="centerDialogVisible = true" v-if="isNotLogin">登录/注册</el-button>
+
+            <el-dialog title="登录/注册" :visible.sync="centerDialogVisible" width="45%" center="false">
+              <span>
+                <el-form ref="form" :model="form" label-width="80px" v-if="isRegistered">
+                  <el-form-item>
+                    <el-input placeholder="大侠留个姓名吧" v-model="form.username"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-input placeholder="留个昵称" v-model="form.nickname"></el-input>
+                  </el-form-item>
+                     <el-form-item>
+                    <el-input placeholder="填个电话" v-model="form.userPhone"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-input placeholder="请输入密码" v-model="form.userPassword"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-input placeholder="请再次输入密码" v-model="form.userPassword"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-input placeholder="最后,一句话介绍一下自己吧" v-model="form.userIntroduction"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-divider content-position="center">
+                      <el-button type="primary" @click="onRegistered">立即注册</el-button>
+                      <el-button @click="toLogin">切换到登录</el-button>
+                    </el-divider>
+                  </el-form-item>
+                </el-form>
+
+                <el-form ref="form" :model="loginForm" label-width="80px" v-if="!isRegistered">
+                  <el-form-item>
+                    <el-input placeholder="请输入手机号" v-model="loginForm.userPhone"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-input placeholder="请输入密码" v-model="loginForm.password"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-divider content-position="center">
+                      <el-button type="primary" @click="onLogin">立即登录</el-button>
+                      <el-button @click="toLogin">切换到注册</el-button>
+                    </el-divider>
+                  </el-form-item>
+                </el-form>
+              </span>
+            </el-dialog>
+          </el-menu-item>
+
+        </el-menu>
+      </el-header>
+      <router-view></router-view>
+      <el-footer>
+        <el-row :gutter="20">
+          <el-divider content-position="center">2020 lxl @<el-link href="https://github.com/lxllxl233" type="success">Github</el-link>.com</el-divider>
+        </el-row>
+      </el-footer>
 </el-container>
 
   </div>
@@ -339,7 +339,6 @@ export default {
           this.userInfo.userHeadimg = this.changeUserInfo.userHeadimg
           this.userInfo.userIntroduction = this.changeUserInfo.userIntroduction
           this.editUserInfo = false
-
         },(err)=>{
           console.log(err)
         }
@@ -449,6 +448,11 @@ export default {
         }
       })
     }
+  },
+  computed:{
+    showMe(){
+      return this.$route.path != '/admin'
+    }
   }
 }
 </script>
@@ -474,5 +478,9 @@ export default {
   }
   .infinite-list-item{
     height:100px;
+  }
+  .body{
+    margin: 0;
+    padding: 0;
   }
 </style>

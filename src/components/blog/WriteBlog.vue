@@ -69,11 +69,6 @@
         // render 为 markdown 解析后的结果[html]
         this.html = render;
       },
-      // 提交
-      submit(){
-        console.log(this.content);
-        console.log(this.html);
-      },
       getAllBlogCatalog: function () {
         this.$http.get("/api/user/getAllBlogCatalog").then(
           (response) => {

@@ -24,22 +24,22 @@
       <el-container>
         <el-main>
 
-
-
-              <el-row :span="6" v-for="(o, index) in blogList" :key="o" :offset="index > 0 ? 2 : 0">
-                <el-card :body-style="{ padding: '0px' }">
-                  <img src="https://images.pexels.com/photos/4328962/pexels-photo-4328962.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="image">
-                  <div style="padding: 14px;">
-                    <span>{{o.title}}</span>
-                    <div class="bottom clearfix">
-                      <time class="time">{{ o.createTime }}</time>
-                      <el-button type="text" class="button" @click="lookBlog(o.id)">查看博客</el-button>
-                    </div>
+          <div>
+            <el-row v-for="(o, index) in blogList" :key="o" >
+              <el-col :span="1"><div class="grid-content bg-purple">
+                <i class="el-icon-paperclip"></i>
+              </div></el-col>
+              <el-col :span="23"><div class="grid-content bg-purple-light">
+                <div style="padding: 14px;">
+                  <div>{{o.title}}</div>
+                  <div>发布时间:<time class="time">{{ o.createTime }}</time></div>
+                  <div class="bottom clearfix">
+                    <el-button type="text" class="button" @click="lookBlog(o.id)">查看博客</el-button>
                   </div>
-                </el-card>
-              </el-row>
-
-
+                </div>
+              </div></el-col>
+            </el-row>
+          </div>
 
 
         </el-main>
@@ -93,35 +93,3 @@
         }
     }
 </script>
-
-<style scoped>
-  .time {
-    font-size: 13px;
-    color: #999;
-  }
-
-  .bottom {
-    margin-top: 13px;
-    line-height: 12px;
-  }
-
-  .button {
-    padding: 0;
-    float: right;
-  }
-
-  .image {
-    width: 100%;
-    display: block;
-  }
-
-  .clearfix:before,
-  .clearfix:after {
-    display: table;
-    content: "";
-  }
-
-  .clearfix:after {
-    clear: both
-  }
-</style>

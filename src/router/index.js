@@ -56,8 +56,9 @@ export default new Router({
       component: LunTanEdit
     },
     {
-      path: "/lunTanPage",
+      path: "/lunTanPage/:id",
       name: "lunTanPage",
+      props: true,
       component: LunTanPage
     },
     {

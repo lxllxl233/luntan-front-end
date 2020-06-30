@@ -13,7 +13,7 @@
               </template>
 
               <el-menu-item-group v-for="catalogV2 in catalog.tbForumCatalogV2List" :key="catalogV2.id">
-                <el-menu-item :index="catalog.tbForumCatalogV1.id +'-'+ catalogV2.id">{{catalogV2.name}}</el-menu-item>
+                <el-menu-item :index="catalog.tbForumCatalogV1.id +'-'+ catalogV2.id" @click="getLunTans(catalogV2.id)">{{catalogV2.name}}</el-menu-item>
               </el-menu-item-group>
 
             </el-submenu>
@@ -25,21 +25,22 @@
         <el-main>
 
 
-          <el-row v-for="i in 3" :key="i">
-            <el-col :span="6" v-for="(o, index) in 3" :key="o" :offset="index > 0 ? 2 : 0">
-              <el-card :body-style="{ padding: '0px' }">
-                <img src="https://images.pexels.com/photos/994605/pexels-photo-994605.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="image">
+          <div>
+            <el-row v-for="(o, index) in lunTanList" :key="o" >
+              <el-col :span="1"><div class="grid-content bg-purple">
+                <i class="el-icon-paperclip"></i>
+              </div></el-col>
+              <el-col :span="23"><div class="grid-content bg-purple-light">
                 <div style="padding: 14px;">
-                  <span>论坛</span>
+                  <div>{{o.title}}</div>
+                  <div>发布时间：<time class="time">{{ o.createTime }}</time></div>
                   <div class="bottom clearfix">
-                    <time class="time">{{ currentDate }}</time>
-                    <el-button type="text" class="button">查看论坛</el-button>
+                    <el-button type="text" class="button" @click="lookLunTan(o.id)">查看论坛</el-button>
                   </div>
                 </div>
-              </el-card>
-            </el-col>
-          </el-row>
-
+              </div></el-col>
+            </el-row>
+          </div>
 
 
         </el-main>
@@ -59,7 +60,8 @@
     data() {
       return {
         currentDate: new Date(),
-        catalogList: []
+        catalogList: [],
+        lunTanList: []
       };
     },
     methods: {
@@ -73,39 +75,23 @@
 
           }
         )
+      },
+      getLunTans: function (v2Id) {
+        console.log(v2Id)
+        this.$http.get("/api/forum/getLunTanByV2Id?v2Id="+v2Id).then(
+          (response)=>{
+            console.log(response.data.data)
+            this.lunTanList = response.data.data
+
+          },(err)=>{
+            console.log(err)
+          }
+        )
+      },
+      lookLunTan: function (lunTanId) {
+        this.$router.push({path:'/lunTanPage/'+lunTanId})
       }
     }
   }
 </script>
 
-<style scoped>
-  .time {
-    font-size: 13px;
-    color: #999;
-  }
-
-  .bottom {
-    margin-top: 13px;
-    line-height: 12px;
-  }
-
-  .button {
-    padding: 0;
-    float: right;
-  }
-
-  .image {
-    width: 100%;
-    display: block;
-  }
-
-  .clearfix:before,
-  .clearfix:after {
-    display: table;
-    content: "";
-  }
-
-  .clearfix:after {
-    clear: both
-  }
-</style>

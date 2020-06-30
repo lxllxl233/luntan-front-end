@@ -61,6 +61,9 @@
 
 <script>
   export default {
+    created() {
+      this.app.showMe = false
+    },
     data() {
       const item = {
         date: '2016-05-02',
