@@ -77,6 +77,7 @@
 <script>
   import Login from "../login/Login";
   export default {
+    inject: ['reload'],
     name: "",
     props: {
       id: 0
@@ -139,6 +140,7 @@
         //提交博客评论
         this.$http.post("/api/blog/releaseComment",this.commentRequest).then(
           (response)=>{
+            this.refresh()
             console.log(response)
             this.$message(response.data.msg);
           },(err)=>{
@@ -159,6 +161,7 @@
           //提交博客评论
           this.$http.post("/api/blog/releaseComment",this.commentRequest).then(
             (response)=>{
+              this.refresh()
               console.log(response)
               this.$message(response.data.msg);
             },(err)=>{
@@ -175,6 +178,9 @@
             message: '提交失败'
           });
         });
+      },
+      refresh () {
+        this.reload()
       }
     }
   }

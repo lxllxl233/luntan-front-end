@@ -6,7 +6,6 @@ const http = axios.create({
 });
 //请求拦截器
 http.interceptors.request.use(config => {
-  console.log(localStorage.token+":before")
   if (localStorage.token) {
     config.headers.token = `${localStorage.token}`
     config.headers.userId = `${localStorage.getItem("userId")}`
@@ -22,6 +21,11 @@ http.interceptors.response.use(res => {
 }, err => {
     const errorMessage = err.response.data.message
     const errorStatus = err.response.status
+    //解决重复点击导航路由报错
+    const originalPush = Router.prototype.push;
+    Router.prototype.push = function push(location) {
+      return originalPush.call(this, location).catch(err => err);
+    }
     if (errorMessage) {
       Vue.prototype.$message({
         type: 'error',

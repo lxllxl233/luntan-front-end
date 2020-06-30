@@ -73,6 +73,7 @@
 
 <script>
     export default {
+        inject: ['reload'],
         name: "",
         props: {
           id: 0
@@ -140,6 +141,7 @@
               //提交博客评论
               this.$http.post("/api/forum/postComment",this.myCommit).then(
                 (response)=>{
+                  this.refresh()
                   console.log(response)
                   this.$message(response.data.msg);
                 },(err)=>{
@@ -167,12 +169,16 @@
             //提交博客评论
             this.$http.post("/api/forum/postComment",this.myCommit).then(
               (response)=>{
+                this.refresh()
                 console.log(response)
                 this.$message("发布成功");
               },(err)=>{
                 console.log(err)
               }
             )
+          },
+          refresh () {
+            this.reload()
           }
         }
     }

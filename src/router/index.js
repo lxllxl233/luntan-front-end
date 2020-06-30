@@ -10,6 +10,15 @@ import Err from "../components/Err";
 import LunTanEdit from "../components/luntan/LunTanEdit";
 import LunTanPage from "../components/luntan/LunTanPage";
 
+import AdminInInfos from "../components/admin/users/AdminInInfos";
+import UserInfos from "../components/admin/users/UserInfos";
+import ForumInfos from "../components/admin/forum/ForumInfos";
+import ForumSort from "../components/admin/forum/ForumSort";
+import BlogInfos from "../components/admin/blog/BlogInfos";
+import BlogSort from "../components/admin/blog/BlogSort";
+
+import SearchResult from "../components/search/SearchResult";
+
 Vue.use(Router)
 
 export default new Router({
@@ -17,7 +26,39 @@ export default new Router({
     {
       path: '/admin',
       name: 'BackStage',
-      component: Backstage
+      component: Backstage,
+      children: [
+        {
+          path: "adminInfos",
+          name: "adminInfos",
+          component: AdminInInfos
+        },
+        {
+          path: "userInfos",
+          name: "userInfos",
+          component: UserInfos
+        },
+        {
+          path: "forumInfos",
+          name: "forumInfos",
+          component: ForumInfos
+        },
+        {
+          path: "forumSort",
+          name: "forumSort",
+          component: ForumSort
+        },
+        {
+          path: "blogInfos",
+          name: "blogInfos",
+          component: BlogInfos
+        },
+        {
+          path: "blogSort",
+          name: "blogSort",
+          component: BlogSort
+        }
+      ]
     },
     {
       path: '/login',
@@ -65,6 +106,12 @@ export default new Router({
       path: "*",
       name: "err",
       component: Err
+    },
+    {
+      path: "/searchResult/:searchName",
+      name: "searchName",
+      component: SearchResult,
+      props: true
     }
   ]
 })

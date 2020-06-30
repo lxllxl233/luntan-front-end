@@ -79,11 +79,13 @@
               let id = dataKey.value.id;
               let name = dataKey.value.name;
               let arr = new Array()
-              dataKey.option.forEach(optionKey => {
-                let id1 = optionKey.id;
-                let name1 = optionKey.name;
-                arr.push({"value":id1,"label":name1})
-              })
+              if (null != dataKey.option) {
+                dataKey.option.forEach(optionKey => {
+                  let id1 = optionKey.id;
+                  let name1 = optionKey.name;
+                  arr.push({"value": id1, "label": name1})
+                })
+              }
               dt.push({"value":id,"label":name,"children":arr})
             })
               this.option = dt

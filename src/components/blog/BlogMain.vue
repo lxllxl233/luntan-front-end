@@ -76,12 +76,10 @@
             )
           },
           getBlogs: function (v2Id) {
-            console.log(v2Id)
             this.$http.get("/api/blog/getV2Blog?v2Id="+v2Id).then(
               (response)=>{
                 console.log(response.data.data)
                 this.blogList = response.data.data
-
               },(err)=>{
                 console.log(err)
               }

@@ -134,18 +134,18 @@
 
                             <el-form ref="form" :model="form" label-width="80px" v-if="!isEditInfo">
                               <el-form-item>
-                                <el-input placeholder="请输入修改前密码" v-model="userChangePasswordInfo.bPassword"></el-input>
+                                <el-input type="password" placeholder="请输入修改前密码" v-model="userChangePasswordInfo.bPassword"></el-input>
                               </el-form-item>
                               <el-form-item>
-                                <el-input placeholder="请输入修改后密码" v-model="userChangePasswordInfo.password"></el-input>
+                                <el-input type="password" placeholder="请输入修改后密码" v-model="userChangePasswordInfo.password"></el-input>
                               </el-form-item>
                                <el-form-item>
-                                <el-input placeholder="请再次输入修改后密码" v-model="userChangePasswordInfo.password"></el-input>
+                                <el-input type="password" placeholder="请再次输入修改后密码" v-model="checkBPassword"></el-input>
                               </el-form-item>
                               <el-form-item>
                                 <el-divider content-position="center">
-                                  <el-button type="primary" @click="onChangePassword">立即修改密码</el-button>
-                                  <el-button @click="toEditInfo">切换到修改个人信息</el-button>
+                                  <el-button type="primary" @click="onChangePassword">立即改密</el-button>
+                                  <el-button @click="toEditInfo">切换到修改信息</el-button>
                                 </el-divider>
                               </el-form-item>
                             </el-form>
@@ -179,6 +179,9 @@
                           <el-button type="success" @click="toLunTanPage" round>发布论坛</el-button>
                         </div></el-col>
                       </el-row>
+                      <div align="center">
+                        <el-button type="info" plain @click="logOut">退出登录</el-button>
+                      </div>
 
                     </el-main>
                   </el-container>
@@ -201,10 +204,10 @@
                     <el-input placeholder="填个电话" v-model="form.userPhone"></el-input>
                   </el-form-item>
                   <el-form-item>
-                    <el-input placeholder="请输入密码" v-model="form.userPassword"></el-input>
+                    <el-input type="password" placeholder="请输入密码" v-model="form.userPassword"></el-input>
                   </el-form-item>
                   <el-form-item>
-                    <el-input placeholder="请再次输入密码" v-model="form.userPassword"></el-input>
+                    <el-input type="password" placeholder="请再次输入密码" v-model="checkPassword"></el-input>
                   </el-form-item>
                   <el-form-item>
                     <el-input placeholder="最后,一句话介绍一下自己吧" v-model="form.userIntroduction"></el-input>
@@ -222,7 +225,7 @@
                     <el-input placeholder="请输入手机号" v-model="loginForm.userPhone"></el-input>
                   </el-form-item>
                   <el-form-item>
-                    <el-input placeholder="请输入密码" v-model="loginForm.password"></el-input>
+                    <el-input type="password" placeholder="请输入密码" v-model="loginForm.password"></el-input>
                   </el-form-item>
                   <el-form-item>
                     <el-divider content-position="center">
@@ -234,10 +237,17 @@
               </span>
             </el-dialog>
           </el-menu-item>
+          <el-menu-item>
+            <div>
+              <el-input placeholder="输入以搜索用户，博客，论坛" v-model="searchName" class="input-with-select">
+                <el-button slot="append" icon="el-icon-search" @click="toSearchPage"></el-button>
+              </el-input>
+            </div>
+          </el-menu-item>
 
         </el-menu>
       </el-header>
-      <router-view></router-view>
+      <router-view  v-if="isRouterAlive">></router-view>
       <el-footer>
         <el-row :gutter="20">
           <el-divider content-position="center">2020 lxl @<el-link href="https://github.com/lxllxl233" type="success">Github</el-link>.com</el-divider>
@@ -251,6 +261,18 @@
 <script>
 
 export default {
+  created() {
+    //检查是否登录
+    if (localStorage.getItem("userId")=="0" || localStorage.getItem("userId")==null){
+      return;
+    }else {
+      var userInfo = localStorage.getItem("userInfo");
+      var changeUserInfo = localStorage.getItem("changeUserInfo")
+      this.userInfo = JSON.parse(userInfo)
+      this.changeUserInfo = JSON.parse(changeUserInfo)
+      this.isNotLogin = false
+    }
+  },
   name: 'app',
   components: {
   },
@@ -263,6 +285,9 @@ export default {
         userPassword: "",
         userIntroduction: ""
       },
+      isRouterAlive: true,
+      //二次输入密码
+      checkPassword: "",
       loginForm: {
         userPhone: "",
         password: ""
@@ -276,6 +301,7 @@ export default {
         userHeadimg: "",
         userIntroduction: ""
       },
+      checkBPassword: "",
       userChangePasswordInfo: {
         bPassword: "string",
         password: "string",
@@ -288,6 +314,7 @@ export default {
         userIntroduction: "",
         username: ""
       },
+      searchName: "",
         //是否修改个人信息
       isEditInfo: true,
       //是否登录
@@ -345,19 +372,23 @@ export default {
       )
     },
     onChangePassword(){
-      this.userChangePasswordInfo.userId = localStorage.getItem("userId")
-      this.$http.post("/api/user/userChangePassword",this.userChangePasswordInfo).then(
-        (response)=>{
-          if (response.data.code == 200){
-            this.editUserInfo = false
-            this.$message(response.data.msg);
-          }else {
-            this.$message(response.data.msg);
-          }
-        },(err)=>{
+      if (this.userChangePasswordInfo.bPassword === this.checkBPassword) {
+        this.userChangePasswordInfo.userId = localStorage.getItem("userId")
+        this.$http.post("/api/user/userChangePassword", this.userChangePasswordInfo).then(
+          (response) => {
+            if (response.data.code == 200) {
+              this.editUserInfo = false
+              this.$message(response.data.msg);
+            } else {
+              this.$message(response.data.msg);
+            }
+          }, (err) => {
 
-        }
-      )
+          }
+        )
+      }else {
+        this.$message("俩次输入密码不一致")
+      }
       //修改密码
     },
     toLogin(){
@@ -396,6 +427,7 @@ export default {
           this.$message(response.data.msg);
           localStorage.setItem("token",response.data.data.token)
           localStorage.setItem("userId",response.data.data.userId)
+
           this.$http.get("/api/user/lookUserInfo?userPhone="+this.loginForm.userPhone).then(
             (res)=>{
               let data = res.data.data;
@@ -404,10 +436,14 @@ export default {
               this.userInfo.userHeadimg = data.userHeadimg
               this.userInfo.userIntroduction = data.userIntroduction
               this.centerDialogVisible = false
-              this.changeUserInfo.username = data.username
-              this.changeUserInfo.nickname = data.nickname
-              this.changeUserInfo.userIntroduction = data.userIntroduction
-              this.changeUserInfo.userHeadimg = data.userHeadimg
+              this.changeUserInfo.username = ""
+              this.changeUserInfo.nickname = ""
+              this.changeUserInfo.userIntroduction = ""
+              this.changeUserInfo.userHeadimg = ""
+              this.isNotLogin = false
+              //数据放在 localStage 里
+              localStorage.setItem("userInfo",JSON.stringify(this.userInfo))
+              localStorage.setItem("changeUserInfo",JSON.stringify(this.changeUserInfo))
             },
             (err)=>{
               console.log(err)
@@ -418,15 +454,32 @@ export default {
         }
       )
     },
+    logOut() {
+      localStorage.setItem("token", "")
+      localStorage.setItem("userId", 0)
+      this.userInfo.username = ""
+      this.userInfo.nickname = ""
+      this.userInfo.userHeadimg = ""
+      this.userInfo.userIntroduction = ""
+      this.changeUserInfo.username = ""
+      this.changeUserInfo.nickname = ""
+      this.changeUserInfo.userIntroduction = ""
+      this.changeUserInfo.userHeadimg = ""
+      this.isNotLogin = true
+    },
     //注册函数
     onRegistered(){
-      this.$http.post("/api/user/userRegistered",this.form).then(
-        (response)=>{
-          this.$message(response.data.msg);
-        },
-        (err)=>{
-        }
-      )
+      if (this.form.userPassword === this.checkPassword){
+        this.$http.post("/api/user/userRegistered",this.form).then(
+          (response)=>{
+            this.$message(response.data.msg);
+          },
+          (err)=>{
+          }
+        )
+      }else {
+        this.$message("俩次密码输入不一致")
+      }
     },
     myUpload(content){
       var form = new FormData();
@@ -447,11 +500,26 @@ export default {
           content.onError('文件上传失败，请求封装失败')
         }
       })
+    },
+    toSearchPage(){
+      this.$router.push({path:'/searchResult/'+this.searchName})
+      this.reload()
+    },
+    reload () {
+      this.isRouterAlive = false
+      this.$nextTick(function () {
+        this.isRouterAlive = true
+      })
     }
   },
   computed:{
     showMe(){
-      return this.$route.path != '/admin'
+      return this.$route.path.indexOf('/admin') == -1
+    }
+  },
+  provide () {
+    return {
+      reload: this.reload
     }
   }
 }

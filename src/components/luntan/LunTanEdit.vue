@@ -45,12 +45,14 @@
             let id = dataKey.tbForumCatalogV1.id;
             let name = dataKey.tbForumCatalogV1.name;
             let arr = new Array()
-            dataKey.tbForumCatalogV2List.forEach(optionKey => {
-              let id1 = optionKey.id;
-              let name1 = optionKey.name;
-              console.log(name1)
-              arr.push({"value":id1,"label":name1})
-            })
+            if (null != dataKey.tbForumCatalogV2List) {
+              dataKey.tbForumCatalogV2List.forEach(optionKey => {
+                let id1 = optionKey.id;
+                let name1 = optionKey.name;
+                console.log(name1)
+                arr.push({"value": id1, "label": name1})
+              })
+            }
             dt.push({"value":id,"label":name,"children":arr})
           })
           this.option = dt
